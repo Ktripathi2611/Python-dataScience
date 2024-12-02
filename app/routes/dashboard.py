@@ -29,3 +29,7 @@ def feature_overview():
 @dashboard.route('/dashboard/development_status')
 def development_status():
     return render_template('dashboard/development_status.html')
+
+@dashboard.route('/packet-analyzer')
+def packet_analyzer():
+    return render_template('dashboard/packet_analyzer.html')

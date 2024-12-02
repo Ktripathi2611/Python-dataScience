@@ -4,6 +4,7 @@ import psutil
 import socket
 import platform
 import subprocess
+import time
 
 network = Blueprint('network', __name__)
 
@@ -13,7 +14,26 @@ def network_page():
 
 @network.route('/api/network/stats')
 def get_network_stats():
-    return jsonify(network_monitor.get_network_stats())
+    """Get real-time network statistics."""
+    stats = network_monitor.get_network_stats()
+    return jsonify(stats)
+
+@network.route('/api/network/active-connections')
+def get_active_connections():
+    """Get real-time active connections."""
+    connections = network_monitor.get_active_connections()
+    return jsonify(connections)
+
+@network.route('/api/network/history')
+def get_network_history():
+    """Get network speed history."""
+    history = {
+        'download': list(network_monitor.speed_history['download']),
+        'upload': list(network_monitor.speed_history['upload']),
+        'timestamp': [time.strftime('%H:%M:%S', time.localtime(t)) 
+                     for t in network_monitor.speed_history['timestamp']]
+    }
+    return jsonify(history)
 
 @network.route('/api/network/devices')
 def get_network_devices():

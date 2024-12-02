@@ -45,6 +45,27 @@ class NetworkMonitor:
             }
         }
 
+    def update_stats(self):
+        """Update network statistics in real-time."""
+        current_io = psutil.net_io_counters()
+        current_time = time.time()
+        
+        if hasattr(self, '_last_io'):
+            time_delta = current_time - self._last_time
+            
+            # Calculate speeds
+            download_speed = (current_io.bytes_recv - self._last_io.bytes_recv) / time_delta
+            upload_speed = (current_io.bytes_sent - self._last_io.bytes_sent) / time_delta
+            
+            # Update history
+            self.speed_history['download'].append(download_speed)
+            self.speed_history['upload'].append(upload_speed)
+            self.speed_history['timestamp'].append(current_time)
+        
+        # Update last values
+        self._last_io = current_io
+        self._last_time = current_time
+
     def get_active_connections(self):
         """Get list of active network connections with detailed information."""
         connections = []
