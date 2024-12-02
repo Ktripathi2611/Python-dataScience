@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitor - CyberShield</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Network Monitor Header -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-network-wired text-blue-500 mr-2"></i>
+                    Network Activity Monitor
+                </h1>
+                <a href="/simple-dashboard" class="text-blue-500 hover:text-blue-600">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+            <p class="text-gray-600">Monitoring your network activity in real-time</p>
+        </div>
+
+        <!-- Network Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Download Speed -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Download</h3>
+                    <i class="fas fa-download text-blue-500 text-xl"></i>
+                </div>
+                <div id="downloadSpeed" class="text-3xl font-bold text-blue-500">0 KB/s</div>
+                <div class="text-sm text-gray-500 mt-2">Current download speed</div>
+            </div>
+
+            <!-- Upload Speed -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Upload</h3>
+                    <i class="fas fa-upload text-green-500 text-xl"></i>
+                </div>
+                <div id="uploadSpeed" class="text-3xl font-bold text-green-500">0 KB/s</div>
+                <div class="text-sm text-gray-500 mt-2">Current upload speed</div>
+            </div>
+
+            <!-- Active Connections -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Connections</h3>
+                    <i class="fas fa-plug text-purple-500 text-xl"></i>
+                </div>
+                <div id="activeConnections" class="text-3xl font-bold text-purple-500">0</div>
+                <div class="text-sm text-gray-500 mt-2">Active network connections</div>
+            </div>
+        </div>
+
+        <!-- Active Connections Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Active Network Connections</h2>
+                <p class="text-sm text-gray-600 mt-1">Programs currently using your network</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Address</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remote Address</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="connectionsTable" class="bg-white divide-y divide-gray-200">
+                        <!-- Connection rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 B/s';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function updateNetworkStats() {
+            fetch('/api/network-stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('downloadSpeed').textContent = formatBytes(data.download_speed);
+                    document.getElementById('uploadSpeed').textContent = formatBytes(data.upload_speed);
+                    document.getElementById('activeConnections').textContent = data.connections;
+                })
+                .catch(error => console.error('Error fetching network stats:', error));
+        }
+
+        function updateConnections() {
+            fetch('/api/active-connections')
+                .then(response => response.json())
+                .then(connections => {
+                    const tbody = document.getElementById('connectionsTable');
+                    tbody.innerHTML = '';
+                    connections.forEach(conn => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <i class="fas fa-desktop text-gray-400 mr-2"></i>
+                                    <div class="text-sm font-medium text-gray-900">${conn.process}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${conn.local_address}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${conn.remote_address}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ${conn.status}
+                                </span>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching connections:', error));
+        }
+
+        // Update network stats and connections every 3 seconds
+        setInterval(updateNetworkStats, 3000);
+        setInterval(updateConnections, 3000);
+
+        // Initial updates
+        updateNetworkStats();
+        updateConnections();
+    </script>
+</body>
+</html>

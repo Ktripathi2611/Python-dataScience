@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Network Monitor{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+    .network-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .network-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    
+    .network-topology {
+        height: 500px;
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    
+    .device-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .device-table th,
+    .device-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .device-table th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        color: #64748b;
+    }
+    
+    .device-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    
+    .status-inactive {
+        background-color: #f1f5f9;
+        color: #64748b;
+    }
+    
+    .device-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Network Monitor</h1>
+    
+    <!-- Network Stats Grid -->
+    <div class="network-grid mb-8">
+        <div class="network-card">
+            <h3 class="text-lg font-semibold mb-2">Download Speed</h3>
+            <div class="text-3xl font-bold text-green-600" id="downloadSpeed">0 KB/s</div>
+        </div>
+        
+        <div class="network-card">
+            <h3 class="text-lg font-semibold mb-2">Upload Speed</h3>
+            <div class="text-3xl font-bold text-blue-600" id="uploadSpeed">0 KB/s</div>
+        </div>
+        
+        <div class="network-card">
+            <h3 class="text-lg font-semibold mb-2">Active Connections</h3>
+            <div class="text-3xl font-bold text-purple-600" id="activeConnections">0</div>
+        </div>
+        
+        <div class="network-card">
+            <h3 class="text-lg font-semibold mb-2">Connected Devices</h3>
+            <div class="text-3xl font-bold text-orange-600" id="connectedDevices">0</div>
+        </div>
+    </div>
+    
+    <!-- Network Topology -->
+    <div class="network-topology mb-8">
+        <h3 class="text-lg font-semibold mb-4">Network Topology</h3>
+        <div id="topology"></div>
+    </div>
+    
+    <!-- Connected Devices Table -->
+    <div class="network-card">
+        <h3 class="text-lg font-semibold mb-4">Connected Devices</h3>
+        <div class="overflow-x-auto">
+            <table class="device-table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>IP Address</th>
+                        <th>MAC Address</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Ports</th>
+                    </tr>
+                </thead>
+                <tbody id="deviceTableBody">
+                    <!-- Device rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Connection Analysis Section -->
+    <div class="network-card mt-8">
+        <h3 class="text-lg font-semibold mb-4">Connection Analysis</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Connection Status -->
+            <div>
+                <h4 class="text-md font-medium mb-3">Connection Status</h4>
+                <div class="space-y-2" id="connectionStatus">
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>Established</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm" id="establishedCount">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>Listening</span>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm" id="listenCount">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>Time Wait</span>
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm" id="timeWaitCount">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>Close Wait</span>
+                        <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-sm" id="closeWaitCount">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>Other</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm" id="otherCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Processes -->
+            <div>
+                <h4 class="text-md font-medium mb-3">Top Processes by Connections</h4>
+                <div class="space-y-2" id="topProcesses">
+                    <!-- Process list will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Connections Table -->
+    <div class="network-card mt-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Active Connections</h3>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200" id="refreshConnections">
+                    <i class="fas fa-sync-alt mr-1"></i> Refresh
+                </button>
+                <input type="text" placeholder="Filter connections..." 
+                       class="px-3 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                       id="connectionFilter">
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Process</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Local Address</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Remote Address</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPU</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Memory</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="connectionTableBody">
+                    <!-- Connection rows will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Network topology visualization
+function initializeTopology() {
+    const width = document.getElementById('topology').offsetWidth;
+    const height = 400;
+    
+    const svg = d3.select('#topology')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+    
+    const simulation = d3.forceSimulation()
+        .force('link', d3.forceLink().id(d => d.id))
+        .force('charge', d3.forceManyBody().strength(-300))
+        .force('center', d3.forceCenter(width / 2, height / 2));
+    
+    function updateTopology() {
+        fetch('/api/network/topology')
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous elements
+                svg.selectAll('*').remove();
+                
+                // Draw links
+                const link = svg.append('g')
+                    .selectAll('line')
+                    .data(data.links)
+                    .enter()
+                    .append('line')
+                    .style('stroke', '#999')
+                    .style('stroke-opacity', 0.6)
+                    .style('stroke-width', d => Math.sqrt(d.value));
+                
+                // Draw nodes
+                const node = svg.append('g')
+                    .selectAll('circle')
+                    .data(data.nodes)
+                    .enter()
+                    .append('circle')
+                    .attr('r', 10)
+                    .style('fill', d => getNodeColor(d.type))
+                    .call(d3.drag()
+                        .on('start', dragstarted)
+                        .on('drag', dragged)
+                        .on('end', dragended));
+                
+                // Add tooltips
+                node.append('title')
+                    .text(d => `${d.name}\n${d.ip || ''}`);
+                
+                // Update simulation
+                simulation
+                    .nodes(data.nodes)
+                    .on('tick', ticked);
+                
+                simulation.force('link')
+                    .links(data.links);
+                
+                function ticked() {
+                    link
+                        .attr('x1', d => d.source.x)
+                        .attr('y1', d => d.source.y)
+                        .attr('x2', d => d.target.x)
+                        .attr('y2', d => d.target.y);
+                    
+                    node
+                        .attr('cx', d => d.x)
+                        .attr('cy', d => d.y);
+                }
+            });
+    }
+    
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+    
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+    
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+    
+    // Update topology every 5 seconds
+    updateTopology();
+    setInterval(updateTopology, 5000);
+}
+
+function getNodeColor(type) {
+    const colors = {
+        'router': '#e11d48',
+        'desktop': '#2563eb',
+        'laptop': '#2563eb',
+        'smartphone': '#7c3aed',
+        'printer': '#059669',
+        'iot': '#d97706',
+        'other': '#6b7280'
+    };
+    return colors[type] || colors.other;
+}
+
+function getDeviceIcon(type) {
+    const icons = {
+        'router': 'fa-network-wired',
+        'desktop': 'fa-desktop',
+        'laptop': 'fa-laptop',
+        'smartphone': 'fa-mobile-alt',
+        'printer': 'fa-print',
+        'iot': 'fa-microchip',
+        'other': 'fa-question-circle'
+    };
+    return `fas ${icons[type] || icons.other}`;
+}
+
+// Update network stats and device table
+function updateNetworkInfo() {
+    // Update network stats
+    fetch('/api/network/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('downloadSpeed').textContent = formatSpeed(data.download_speed);
+            document.getElementById('uploadSpeed').textContent = formatSpeed(data.upload_speed);
+            document.getElementById('activeConnections').textContent = data.active_connections;
+        });
+    
+    // Update device table
+    fetch('/api/network/devices')
+        .then(response => response.json())
+        .then(devices => {
+            document.getElementById('connectedDevices').textContent = devices.length;
+            
+            const tableBody = document.getElementById('deviceTableBody');
+            tableBody.innerHTML = devices.map(device => `
+                <tr>
+                    <td class="flex items-center">
+                        <i class="${getDeviceIcon(device.type)} text-gray-500 mr-2"></i>
+                        ${device.name || 'Unknown Device'}
+                    </td>
+                    <td>${device.ip}</td>
+                    <td>${device.mac}</td>
+                    <td>${device.type}</td>
+                    <td>
+                        <span class="status-badge ${device.active ? 'status-active' : 'status-inactive'}">
+                            ${device.active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>${device.ports.join(', ')}</td>
+                </tr>
+            `).join('');
+        });
+}
+
+function formatSpeed(bytesPerSec) {
+    if (bytesPerSec < 1024) return bytesPerSec + ' B/s';
+    if (bytesPerSec < 1024 * 1024) return (bytesPerSec / 1024).toFixed(1) + ' KB/s';
+    return (bytesPerSec / (1024 * 1024)).toFixed(1) + ' MB/s';
+}
+
+// Update connection analysis
+function updateConnectionAnalysis() {
+    fetch('/api/network/connections')
+        .then(response => response.json())
+        .then(data => {
+            // Update status counts
+            const status = data.summary.by_status;
+            document.getElementById('establishedCount').textContent = status.ESTABLISHED;
+            document.getElementById('listenCount').textContent = status.LISTEN;
+            document.getElementById('timeWaitCount').textContent = status.TIME_WAIT;
+            document.getElementById('closeWaitCount').textContent = status.CLOSE_WAIT;
+            document.getElementById('otherCount').textContent = status.OTHER;
+
+            // Update top processes
+            const processesHtml = data.summary.top_processes.map(proc => `
+                <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span class="truncate" title="${proc.name}">${proc.name}</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                        ${proc.connections}
+                    </span>
+                </div>
+            `).join('');
+            document.getElementById('topProcesses').innerHTML = processesHtml;
+
+            // Update connections table
+            const tableBody = document.getElementById('connectionTableBody');
+            const filterValue = document.getElementById('connectionFilter').value.toLowerCase();
+            
+            const filteredConnections = data.connections.filter(conn => 
+                conn.process_name.toLowerCase().includes(filterValue) ||
+                conn.local_address.toLowerCase().includes(filterValue) ||
+                conn.remote_address.toLowerCase().includes(filterValue) ||
+                conn.status.toLowerCase().includes(filterValue)
+            );
+
+            tableBody.innerHTML = filteredConnections.map(conn => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">
+                        <div class="flex items-center">
+                            <span class="font-medium">${conn.process_name}</span>
+                            <span class="ml-2 text-xs text-gray-500">(PID: ${conn.pid})</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2 text-sm">${conn.local_address}</td>
+                    <td class="px-4 py-2 text-sm">${conn.remote_address}</td>
+                    <td class="px-4 py-2">
+                        <span class="px-2 py-1 text-xs rounded-full ${getStatusClass(conn.status)}">
+                            ${conn.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-2 text-sm">${conn.cpu_percent.toFixed(1)}%</td>
+                    <td class="px-4 py-2 text-sm">${conn.memory_percent.toFixed(1)}%</td>
+                </tr>
+            `).join('');
+        });
+}
+
+function getStatusClass(status) {
+    const classes = {
+        'ESTABLISHED': 'bg-green-100 text-green-800',
+        'LISTEN': 'bg-blue-100 text-blue-800',
+        'TIME_WAIT': 'bg-yellow-100 text-yellow-800',
+        'CLOSE_WAIT': 'bg-orange-100 text-orange-800',
+        'default': 'bg-gray-100 text-gray-800'
+    };
+    return classes[status] || classes.default;
+}
+
+// Set up event listeners
+document.getElementById('refreshConnections').addEventListener('click', updateConnectionAnalysis);
+document.getElementById('connectionFilter').addEventListener('input', updateConnectionAnalysis);
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    initializeTopology();
+    updateNetworkInfo();
+    updateConnectionAnalysis();
+    setInterval(updateNetworkInfo, 3000);
+    setInterval(updateConnectionAnalysis, 5000);
+});
+</script>
+{% endblock %}

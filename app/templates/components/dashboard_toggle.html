@@ -1,0 +1,25 @@
+<!-- Dashboard Toggle Navigation -->
+<div class="bg-white shadow-md rounded-lg p-2 mb-8">
+    <div class="flex justify-center space-x-2">
+        <a href="{{ url_for('dashboard.feature_overview') }}" 
+           class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.feature_overview' %}bg-blue-600 text-white{% else %}hover:bg-gray-100{% endif %} transition-colors">
+            Overview
+        </a>
+        <a href="{{ url_for('dashboard.feature_list') }}" 
+           class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.feature_list' %}bg-blue-600 text-white{% else %}hover:bg-gray-100{% endif %} transition-colors">
+            Feature List
+        </a>
+        <a href="{{ url_for('dashboard.upcoming_features') }}" 
+           class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.upcoming_features' %}bg-blue-600 text-white{% else %}hover:bg-gray-100{% endif %} transition-colors">
+            Upcoming Features
+        </a>
+        <a href="{{ url_for('dashboard.development_status') }}" 
+           class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.development_status' %}bg-blue-600 text-white{% else %}hover:bg-gray-100{% endif %} transition-colors">
+            Development Status
+        </a>
+        <a href="{{ url_for('dashboard.ddos_protection') }}" 
+           class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.ddos_protection' %}bg-blue-600 text-white{% else %}hover:bg-gray-100{% endif %} transition-colors">
+            DDoS Protection
+        </a>
+    </div>
+</div>

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Network Security Dashboard</h1>
+                    <p class="text-gray-600 mt-1">Real-time network security monitoring and analysis</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Generate Report
+                    </button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                        Configure Alerts
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Threats Blocked -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 rounded-full">
+                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Threats Blocked</p>
+                        <p class="text-2xl font-bold text-gray-900">1,234</p>
+                        <p class="text-sm text-green-600">↑ 23% from last week</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Load -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Network Load</p>
+                        <p class="text-2xl font-bold text-gray-900">45%</p>
+                        <p class="text-sm text-gray-500">Normal range</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Connections -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Active Connections</p>
+                        <p class="text-2xl font-bold text-gray-900">892</p>
+                        <p class="text-sm text-blue-600">↑ 12% increase</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Time -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Response Time</p>
+                        <p class="text-2xl font-bold text-gray-900">45ms</p>
+                        <p class="text-sm text-green-600">↓ 5ms improvement</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Network Traffic Chart -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Network Traffic</h2>
+                <canvas id="networkTrafficChart" height="300"></canvas>
+            </div>
+
+            <!-- Threat Distribution Chart -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Threat Distribution</h2>
+                <canvas id="threatDistributionChart" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Security Events -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Recent Security Events</h2>
+                <button class="text-blue-600 hover:text-blue-700">View All</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 min ago</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Suspicious Login Attempt</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">192.168.1.105</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Blocked</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5 min ago</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Port Scan Detected</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">203.45.78.90</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Investigating</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 min ago</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Firewall Rule Update</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">System</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Network Traffic Chart
+const networkTrafficCtx = document.getElementById('networkTrafficChart').getContext('2d');
+new Chart(networkTrafficCtx, {
+    type: 'line',
+    data: {
+        labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+        datasets: [{
+            label: 'Inbound Traffic',
+            data: [65, 59, 80, 81, 56, 55, 40, 70],
+            borderColor: 'rgb(59, 130, 246)',
+            tension: 0.4,
+            fill: false
+        }, {
+            label: 'Outbound Traffic',
+            data: [28, 48, 40, 19, 86, 27, 90, 50],
+            borderColor: 'rgb(99, 102, 241)',
+            tension: 0.4,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Threat Distribution Chart
+const threatDistributionCtx = document.getElementById('threatDistributionChart').getContext('2d');
+new Chart(threatDistributionCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['DDoS Attempts', 'Malware', 'Phishing', 'Port Scans', 'Other'],
+        datasets: [{
+            data: [35, 25, 20, 15, 5],
+            backgroundColor: [
+                'rgb(239, 68, 68)',
+                'rgb(59, 130, 246)',
+                'rgb(16, 185, 129)',
+                'rgb(139, 92, 246)',
+                'rgb(107, 114, 128)'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'right'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!-- Top Navigation Bar -->
+<div class="bg-gray-800 text-white shadow-lg p-4 sticky top-0 z-50">
+    <div class="container mx-auto">
+        <!-- Navigation Buttons -->
+        <div class="flex flex-wrap gap-2">
+            <!-- DDoS Protection -->
+            <a href="{{ url_for('dashboard.ddos_protection') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.ddos_protection' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                DDoS Protection
+            </a>
+
+            <!-- Development Status -->
+            <a href="{{ url_for('dashboard.development_status') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.development_status' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Development Status
+            </a>
+
+            <!-- Feature List -->
+            <a href="{{ url_for('dashboard.feature_list') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.feature_list' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Feature List
+            </a>
+
+            <!-- Feature Overview -->
+            <a href="{{ url_for('dashboard.feature_overview') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.feature_overview' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                Overview
+            </a>
+
+            <!-- Network Security -->
+            <a href="{{ url_for('dashboard.network_security') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.network_security' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                </svg>
+                Network Security
+            </a>
+
+            <!-- Upcoming Dashboard -->
+            <a href="{{ url_for('dashboard.upcoming_features') }}" 
+               class="px-4 py-2 rounded-lg {% if request.endpoint == 'dashboard.upcoming_features' %}bg-blue-600{% else %}hover:bg-gray-700{% endif %} transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Upcoming Features
+            </a>
+        </div>
+    </div>
+</div>

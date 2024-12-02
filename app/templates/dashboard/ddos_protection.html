@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}DDoS Protection - CyberShield AI{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+    {% include 'components/nav_buttons.html' %}
+    
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">DDoS Protection</h1>
+        
+        <!-- DDoS Protection Content -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Traffic Monitor -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Traffic Monitor</h2>
+                <canvas id="trafficChart"></canvas>
+            </div>
+            
+            <!-- Attack Statistics -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Attack Statistics</h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-gray-600">Total Attacks Blocked</p>
+                        <p class="text-2xl font-bold text-blue-600">1,234</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Current Traffic Status</p>
+                        <p class="text-lg font-semibold text-green-600">Normal</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Protection Settings -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Protection Settings</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span>Auto-Mitigation</span>
+                        <button class="px-3 py-1 bg-green-500 text-white rounded">Enabled</button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Threshold Level</span>
+                        <select class="border rounded px-2 py-1">
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Traffic Chart
+    const ctx = document.getElementById('trafficChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1m', '2m', '3m', '4m', '5m'],
+            datasets: [{
+                label: 'Traffic (Mb/s)',
+                data: [65, 59, 80, 81, 56],
+                borderColor: 'rgb(59, 130, 246)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
