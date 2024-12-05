@@ -1,151 +1,157 @@
-# CyberShield AI Defence System
+# CyberShield AI Network Monitor
 
-A comprehensive network security and monitoring platform with real-time packet analysis and threat detection capabilities.
+A comprehensive real-time network security and system monitoring platform with advanced threat detection capabilities.
 
-## System Requirements
-- Python 3.11+ (tested on Python 3.12)
-- Administrator/Root privileges for packet capture
-- Windows/Linux OS
-- Network interface access
+## 🚀 Project Overview
+CyberShield AI is an intelligent network security and monitoring platform designed to provide:
+- Real-time threat detection
+- System resource monitoring
+- Network traffic analysis
+- Advanced security analytics
 
-## Installation
-1. Clone the repository
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Linux/Mac
-venv\Scripts\activate     # On Windows
-```
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 🔧 Core Components
 
-## Running the Application
-```bash
-python run.py
-```
-Access the dashboard at: http://localhost:5000
+### 1. Dashboard Architecture
+- **Main Dashboard**: System overview and quick actions
+- **System Resources Monitor**: Detailed resource tracking
+- **Network Security Monitor**: Real-time security analysis
 
-## Feature Status
-
-### Working Features
-
-#### Network Monitoring
-- Real-time packet capture and analysis
-- Protocol distribution tracking
-- Source/Destination IP monitoring
-- Port usage statistics
-- Basic packet filtering
-- Packet length analysis
-
-#### System Monitoring
+### 2. Monitoring Capabilities
+#### System Monitoring (✅ Working)
 - CPU usage tracking
 - Memory utilization
 - Disk space monitoring
 - Network interface statistics
 - Process monitoring
+- Real-time metric updates
 
-#### Security Features
-- Port scanning detection
+#### Network Security (✅ Working)
+- Real-time packet capture
+- Protocol analysis
+- Traffic monitoring
+- Connection tracking
+- Basic threat detection
+
+#### Resource Monitoring (✅ Working)
+- Thread-safe monitoring
+- Configurable intervals
+- Dynamic updates
+- Performance optimization
+
+### 3. Security Features
+#### Currently Available (✅)
 - Basic intrusion detection
-- Network anomaly detection
+- Port scanning detection
 - Traffic pattern analysis
+- Network anomaly detection
+- Real-time alerts
 
-#### Dashboard
-- Real-time system metrics display
-- Network traffic visualization
-- Interactive charts and graphs
-- System health indicators
-
-### Partially Working Features
-
-#### Network Analysis
-- Deep packet inspection (limited functionality)
-- Protocol-specific analysis (basic implementation)
-- Traffic pattern recognition (needs optimization)
-
-#### Security Features
-- Threat detection (basic rules only)
-- Alert system (needs configuration)
-- Log analysis (basic implementation)
-
-#### Dashboard Integration
-- Real-time packet visualization (occasional delays)
-- Custom filter application (basic filters only)
-- Historical data viewing (limited functionality)
-
-### Not Working/Under Development
-
-#### Security Features
+#### Under Development (🚧)
 - Advanced threat detection
-- Machine learning-based analysis
-- Automated response system
+- Machine learning analysis
+- Automated responses
+- Deep packet inspection
 - Vulnerability scanning
-- Malware detection
 
-#### Analysis Tools
-- Advanced packet filtering
-- Custom rule creation
-- Traffic prediction
-- Network topology mapping
+### 4. User Interface
+#### Implemented (✅)
+- Responsive design
+- Dark/light mode
+- Real-time charts
+- System metrics display
+- Quick action buttons
 
-#### Dashboard Features
-- Custom dashboard layouts
-- Advanced data export
-- Report generation
+#### Planned Features (🔄)
+- Custom dashboards
+- Advanced filtering
+- Extended reporting
 - Alert customization
+- User authentication
 
-### Background Services (Running but Not Connected to Dashboard)
+## 🛠 Technical Stack
+- **Backend**: Python 3.11+, Flask
+- **Frontend**: HTML5, Tailwind CSS
+- **Monitoring**: psutil, scapy
+- **Visualization**: Chart.js
+- **Security**: Built-in threat detection
 
-1. Advanced Packet Analysis Service
-   - Detailed protocol analysis
-   - Traffic pattern matching
-   - Payload inspection
-   - Status: Running independently, data not displayed
+## 📊 Current Implementation Status
 
-2. Network Forensics Module
-   - Packet recording
-   - Session reconstruction
-   - Protocol decoding
-   - Status: Functional but not integrated
+### ✅ Completed Features
+1. Real-time system monitoring
+2. Basic network security
+3. Resource tracking
+4. Interactive dashboard
+5. Thread-safe operations
 
-3. Threat Intelligence Service
-   - IP reputation checking
-   - Known threat detection
-   - Malicious pattern matching
-   - Status: Active but not visualized
+### 🚧 In Development
+1. Advanced security features
+2. ML-based analysis
+3. Custom rule engine
+4. Extended reporting
+5. User authentication
 
-4. Performance Monitoring Service
-   - Detailed performance metrics
-   - Resource usage tracking
-   - Network latency monitoring
-   - Status: Collecting data, not displayed
+### 🎯 Future Roadmap
+1. AI-powered threat detection
+2. Automated response system
+3. Advanced forensics
+4. Custom security rules
+5. Enhanced analytics
 
-## Known Issues
-1. WebSocket connection may require reconnection after long periods
-2. High CPU usage during intensive packet capture
-3. Memory usage grows over time with packet capture enabled
-4. Some features require elevated privileges
-5. TripleDES deprecation warnings from Scapy library
-6. Wireshark integration shows configuration warnings
+## 💡 Key Design Features
+- Modular architecture
+- Real-time monitoring
+- Thread-safe operations
+- Scalable design
+- Error handling
 
-## Security Notes
-- Requires administrator privileges for packet capture
-- Only monitors local network interfaces
-- Implements basic access controls
-- Handles sensitive network data
+## ⚠️ Known Limitations
+1. Local system monitoring only
+2. Basic security rules
+3. Limited ML capabilities
+4. No user authentication
+5. Basic reporting
 
-## Upcoming Features
-1. Advanced machine learning integration
-2. Improved threat detection algorithms
-3. Enhanced visualization options
-4. Custom rule engine
-5. Automated response capabilities
-6. Extended reporting features
+## 🔒 Security Considerations
+- Limited to local system
+- Basic access controls
+- Secure metric collection
+- Error handling
+- Data protection
 
-## Contributing
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+## 📝 Development Notes
+1. Modular component design
+2. Real-time data processing
+3. Efficient resource usage
+4. Cross-platform support
+5. Extensible architecture
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🌟 Upcoming Enhancements
+1. Advanced AI integration
+2. Enhanced security features
+3. Custom rule engine
+4. User authentication
+5. Extended analytics
+
+## 🔄 Installation & Setup
+```bash
+# Clone repository
+git clone https://github.com/Ktripathi2611/AI-Power-Defense.git
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python run.py
+```
+
+## 👥 Contributing
+Contributions welcome! Please read our contributing guidelines before submitting pull requests.
+
+## 📄 License
+MIT License - see LICENSE file for details.
